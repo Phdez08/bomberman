@@ -5,14 +5,31 @@
 #include <iostream>
 #include <string>
 #include <experimental/random>
+#include <list>
+#include <fstream>
 
 using namespace std;
 using namespace ftxui;
 
 int main(int argc, char const *argv[])
 {
+    list<string> textos;
+    fstream imagen;
+    imagen.open("./assets/imagen.txt");
+
+    string linea;
+    while (getline(imagen, linea))
+    {
+        textos.push_back(linea);
+    }
+    imagen.close();
+
+
     int fotograma = 0;
     string reset;
+
+    int posX = 0;
+    int posY = 0;
 
     while (true)
     {
@@ -45,6 +62,27 @@ int main(int argc, char const *argv[])
         Screen pantalla = Screen::Create(Ancho, Alto); // Create es un metodo estatico que tiene la clase Screen
 
         Render(pantalla, dibujo);
+
+        int l = 0;
+        for (auto &&texto : textos)
+        {
+
+            int i = 0;
+            for (auto &&letra : texto)
+            {
+                pantalla.PixelAt(posX + i, posY + l).character = letra;
+                i++;
+            }
+            l++;
+        }
+
+        /*
+        for (int i = 0; i < 6; i++)
+        {
+            pantalla.PixelAt(posX + i, 6).character = "-";
+        }*/
+
+        posX++;
 
         pantalla.Print();
         reset = pantalla.ResetPosition();
